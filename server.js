@@ -8,6 +8,9 @@ var mongoose = require('mongoose');
 // the model
 var Project = require('./project-model')
 
+// the type
+var Type = require('./type-model')
+
 //setup express server
 var app = express()
 app.use(cors())
@@ -24,11 +27,8 @@ db.on('error', () => console.log('Database error'))
 
 //setup routes
 var router = express.Router();
- 
-router.get('/testing', (req, res) => {
-  res.send('<h1>Testing is working</h1>')
-})
 
+//CRUD for projects
 router.get('/projects', (req, res) => {
     Project.find()
     .then((projects) => {
@@ -75,6 +75,59 @@ router.put('/projects/:id', (req, res) => {
 router.delete('/projects/:id', (req, res) => {
 
     Project.deleteOne({id: req.params.id})
+    .then(() => {
+      res.json('deleted')
+    })
+
+})
+
+//CRUD for type
+router.get('/types', (req, res) => {
+    Type.find()
+    .then((types) => {
+        res.json(types);
+    })
+})  
+
+router.get('/types/:id', (req, res) => {
+  Type.findOne({id:req.params.id})
+  .then((type) => {
+      res.json(type);
+  })
+})  
+
+router.post('/types', (req, res) => {
+
+  var type = new Type()
+  type.id = Date.now()
+  
+  var data = req.body
+  console.log(data)
+  Object.assign(type,data)
+  type.save()
+  .then((type) => {
+      res.json(type)
+  })
+  
+})
+
+router.put('/types/:id', (req, res) => {
+
+    Type.findOne({id:req.params.id})
+    .then((type) => {
+        var data = req.body
+        Object.assign(type,data)
+        return type.save()   
+    })
+    .then((type) => {
+         res.json(type)
+    })
+
+})
+
+router.delete('/types/:id', (req, res) => {
+
+    Type.deleteOne({id: req.params.id})
     .then(() => {
       res.json('deleted')
     })
