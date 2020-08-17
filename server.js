@@ -34,29 +34,52 @@ router.get('/projects', (req, res) => {
     .then((projects) => {
         res.json(projects);
     })
-  })  
+})  
 
-  router.get('/projects/:id', (req, res) => {
+router.get('/projects/:id', (req, res) => {
+  Project.findOne({id:req.params.id})
+  .then((project) => {
+      res.json(project);
+  })
+})  
+
+router.post('/projects', (req, res) => {
+
+  var project = new Project()
+  project.id = Date.now()
+  
+  var data = req.body
+  console.log(data)
+  Object.assign(project,data)
+  project.save()
+  .then((project) => {
+      res.json(project)
+  })
+  
+})
+
+router.put('/projects/:id', (req, res) => {
+
     Project.findOne({id:req.params.id})
     .then((project) => {
-        res.json(project);
+        var data = req.body
+        Object.assign(project,data)
+        return project.save()   
     })
-  })  
-  
-  router.post('/projects', (req, res) => {
- 
-    var project = new Project()
-    project.id = Date.now()
-    
-    var data = req.body
-    console.log(data)
-    Object.assign(project,data)
-    project.save()
     .then((project) => {
-        res.json(project)
+         res.json(project)
     })
-    
-  })
+
+})
+
+router.delete('/projects/:id', (req, res) => {
+
+    Project.deleteOne({id: req.params.id})
+    .then(() => {
+      res.json('deleted')
+    })
+
+})
    
 
 //use server to serve up routes
