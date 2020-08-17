@@ -11,6 +11,9 @@ var Project = require('./project-model')
 // the type
 var Type = require('./type-model')
 
+// the user
+var User = require('./user-model')
+
 //setup express server
 var app = express()
 app.use(cors())
@@ -31,8 +34,8 @@ var router = express.Router();
 //CRUD for projects
 router.get('/projects', (req, res) => {
     Project.find()
-    .then((projects) => {
-        res.json(projects);
+    .then((project) => {
+        res.json(project);
     })
 })  
 
@@ -84,8 +87,8 @@ router.delete('/projects/:id', (req, res) => {
 //CRUD for type
 router.get('/types', (req, res) => {
     Type.find()
-    .then((types) => {
-        res.json(types);
+    .then((type) => {
+        res.json(type);
     })
 })  
 
@@ -128,6 +131,59 @@ router.put('/types/:id', (req, res) => {
 router.delete('/types/:id', (req, res) => {
 
     Type.deleteOne({id: req.params.id})
+    .then(() => {
+      res.json('deleted')
+    })
+
+})
+
+//CRUD for user
+router.get('/users', (req, res) => {
+    User.find()
+    .then((user) => {
+        res.json(user);
+    })
+})  
+
+router.get('/users/:id', (req, res) => {
+  User.findOne({id:req.params.id})
+  .then((user) => {
+      res.json(user);
+  })
+})  
+
+router.post('/users', (req, res) => {
+
+  var user = new User()
+  user.id = Date.now()
+  
+  var data = req.body
+  console.log(data)
+  Object.assign(user,data)
+  user.save()
+  .then((user) => {
+      res.json(user)
+  })
+  
+})
+
+router.put('/users/:id', (req, res) => {
+
+    User.findOne({id:req.params.id})
+    .then((user) => {
+        var data = req.body
+        Object.assign(user,data)
+        return user.save()   
+    })
+    .then((user) => {
+         res.json(user)
+    })
+
+})
+
+router.delete('/users/:id', (req, res) => {
+
+    User.deleteOne({id: req.params.id})
     .then(() => {
       res.json('deleted')
     })
