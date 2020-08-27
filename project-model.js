@@ -10,8 +10,18 @@ const ProjectSchema = new Schema(
     type_id: Number
    
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true}
+  }
 )
+
+TypeSchema.virtual('type', {
+  ref: 'Type',
+  localField: 'type_id',
+  foreignField: 'id',
+  justOne: true,
+})
  
 // export the new Schema so we could modify it using Node.js
 module.exports = mongoose.model('Project', ProjectSchema)

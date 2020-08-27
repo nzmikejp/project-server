@@ -34,6 +34,7 @@ var router = express.Router();
 //CRUD for projects
 router.get('/projects', (req, res) => {
     Project.find()
+    .populate('type')
     .then((project) => {
         res.json(project);
     })
@@ -41,6 +42,7 @@ router.get('/projects', (req, res) => {
 
 router.get('/projects/:id', (req, res) => {
   Project.findOne({id:req.params.id})
+  .populate('type')
   .then((project) => {
       res.json(project);
   })
@@ -87,6 +89,7 @@ router.delete('/projects/:id', (req, res) => {
 //CRUD for type
 router.get('/types', (req, res) => {
     Type.find()
+    .populate('projects')
     .then((type) => {
         res.json(type);
     })
@@ -94,6 +97,7 @@ router.get('/types', (req, res) => {
 
 router.get('/types/:id', (req, res) => {
   Type.findOne({id:req.params.id})
+  .populate('projects')
   .then((type) => {
       res.json(type);
   })
@@ -195,5 +199,5 @@ router.delete('/users/:id', (req, res) => {
 app.use('/api', router);
  
 // launch our backend into a port
-const apiPort = 3001;
+const apiPort = 4000;
 app.listen(apiPort, () => console.log('Listening on port '+apiPort));
